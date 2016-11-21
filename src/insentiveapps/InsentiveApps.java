@@ -6,6 +6,7 @@
 package insentiveapps;
 
 import config.DbConn;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -20,7 +21,8 @@ public class InsentiveApps {
         // TODO code application logic here
 //        DbConn conn = new DbConn();
 //        conn.koneksiDB();
-    
+        JFileChooser jf = new JFileChooser();
+        
     }
     
 }

@@ -8,7 +8,8 @@ package components;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 /**
  *
  * @author $Teguh Kristianto
