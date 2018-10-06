@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 public class DbConn {
     private Connection dbConn = null;
-    private String DB = "jdbc:mysql://localhost/toyotacp_newdb";
+    private String DB = "jdbc:mysql://localhost/test";
     private String user = "root";
     private String password = "";
 

@@ -46,10 +46,13 @@ public class LoginModel {
             Connection conn = objConn.koneksiDB();
             Statement st = conn.createStatement();
             
-            String query = "select * from gf_clients where username='"+ username +"'";
+            String query = "select * from user where username='"+ username +"'";
             ResultSet rs = st.executeQuery(query);
             Rajamobil rm = new Rajamobil();
             String md5password = rm.md5(password);
+            System.out.println("username = "+username);
+            System.out.println("password = "+password);
+            System.out.println("hash password = "+md5password);
             if(rs.next()){
                 if(rs.getString("password").equals(md5password)){
                     result = "exist";
