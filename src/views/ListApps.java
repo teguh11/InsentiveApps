@@ -5,6 +5,14 @@
  */
 package views;
 
+import config.DbConn;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import model.Apps;
+
 /**
  *
  * @author ACT
@@ -14,8 +22,38 @@ public class ListApps extends javax.swing.JFrame {
     /**
      * Creates new form ListApps
      */
+    public DefaultTableModel model;
+    
     public ListApps() {
         initComponents();
+        String[] header = {"App name", "Description", "Owned By", "Status"};
+        model = new DefaultTableModel(header, 0);
+        tblListApps.setModel(model);
+        getAppLists();
+    }
+    
+    
+    
+    public void getAppLists()
+    {
+        DbConn dbconn = new DbConn();
+        Connection conn = dbconn.koneksiDB();
+        Statement st;
+        ResultSet rs;
+        
+        try {
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT a.app_name, u.name as owned_by, a.status, a.version FROM `apps` a left join user u on a.owned_by = u.id");
+            
+            while(rs.next())
+            {
+                String[] row = {rs.getString("app_name"), rs.getString("owned_by"), rs.getString("status"), rs.getString("version")};
+                model.addRow(row);
+            }
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -28,13 +66,13 @@ public class ListApps extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblListApps = new javax.swing.JTable();
         btnAddApps = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblListApps.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -45,7 +83,7 @@ public class ListApps extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblListApps);
 
         btnAddApps.setText("TAMBAH");
         btnAddApps.addActionListener(new java.awt.event.ActionListener() {
@@ -78,8 +116,8 @@ public class ListApps extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(9, 9, 9)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                .addComponent(btnAddApps)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAddApps, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(81, 81, 81))
@@ -134,6 +172,6 @@ public class ListApps extends javax.swing.JFrame {
     private javax.swing.JButton btnAddApps;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblListApps;
     // End of variables declaration//GEN-END:variables
 }

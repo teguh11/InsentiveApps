@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,33 +21,82 @@ import java.util.logging.Logger;
  * @author ACT
  */
 public class Apps {
-    public HashMap<String, Integer> appsCombo(){
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+    private int status;
+    private String app_name, desc, owned_by, version;
+    
+//    public Apps(int status, String app_name, String desc, String owned_by, String version)
+//    {
+//        this.status = status;
+//        this.app_name = app_name;
+//        this.desc = desc;
+//        this.owned_by = owned_by;
+//        this.version = version;
+//    }
+    
+    public static int Insert(HashMap<String, String> request){
         
-        DbConn dbcon = new DbConn();
-        Connection conn = dbcon.koneksiDB();
+        DbConn db = new DbConn();
+        Connection conn = db.koneksiDB();
         Statement st;
         ResultSet rs;
         
         try {
-//Statement st = conn.createStatement();
-//            
-//            String query = "select * from user where username='"+ username +"'";
-//            ResultSet rs = st.executeQuery(query);
-
+            String sql = "insert into apps (app_name, description, owned_by, version,status) "
+                    + "values ('"+request.get("app_name")+"', '"+request.get("desc")+"', '"+request.get("owned_by")+"', '"+request.get("version")+"', '"+request.get("status")+"')";
+            System.out.println(sql);
             st = conn.createStatement();
-            rs = st.executeQuery("select id, name FROM user");
-            comboItems cmi;
+            st.execute(sql);
             
-            while(rs.next()){
-                cmi = new comboItems(rs.getInt(1), rs.getString(2));
-                map.put(cmi.getValue(), cmi.getId());
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Apps.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
         }
-        
-        return map;
+        return 1;
+    }
+    
+    public int getStatus(){
+        return status;
+    }
+    
+    public String getAppName()
+    {
+        return app_name;
+    }
+    
+    public String getDesc()
+    {
+        return desc;
+    }
+    
+    public String getOwnedBy()
+    {
+        return owned_by;
+    }
+    
+    public String getVersion()
+    {
+        return version;
+    }
+    
+    public void setStatus(int status){
+        this.status = status;
+    }
+    
+    public void setAppName(String app_name)
+    {
+        this.app_name = app_name;
+    }
+    
+    public void getDesc(String desc)
+    {
+        this.desc = desc;
+    }
+    
+    public void setOwnedBy(String owned_by)
+    {
+        this.owned_by = owned_by;
+    }
+    
+    public void setVersion(String version)
+    {
+        this.version = version;
     }
 }

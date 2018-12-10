@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import components.ComboBoxApps;
 import model.Apps;
 
 /**
@@ -21,18 +22,24 @@ public class NewApp extends javax.swing.JFrame {
     /**
      * Creates new form NewApp
      */
-    String appName, desc, ownedby, status;
+    String appName, desc, ownedby, status, version;
     public NewApp() {
         initComponents();
         bindCombo();
     }
 
     public void bindCombo(){
-        Apps apps = new Apps();
+        ComboBoxApps apps = new ComboBoxApps();
         HashMap<String, Integer> map = apps.appsCombo();
         for(String s:map.keySet()){
             cbx_owned_by.addItem(s);
         }
+        
+        HashMap<String, Integer> status = apps.statusCombo();
+        for(String s:status.keySet()){
+            cbx_status.addItem(s);
+        }
+        
         
     }
 
@@ -57,7 +64,8 @@ public class NewApp extends javax.swing.JFrame {
         btn_cancel = new javax.swing.JButton();
         cbx_owned_by = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
-        txtlabel6 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txt_version = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -75,6 +83,12 @@ public class NewApp extends javax.swing.JFrame {
         jScrollPane1.setViewportView(txt_desc);
 
         jLabel4.setText("Status");
+
+        cbx_status.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbx_statusActionPerformed(evt);
+            }
+        });
 
         btn_save.setText("Save");
         btn_save.addActionListener(new java.awt.event.ActionListener() {
@@ -99,6 +113,8 @@ public class NewApp extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel5.setText("TAMBAH APLIKASI");
 
+        jLabel6.setText("Version");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,20 +138,22 @@ public class NewApp extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbx_owned_by, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txt_app_name))
-                        .addGap(18, 18, 18)
-                        .addComponent(txtlabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51))
+                        .addGap(87, 87, 87))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(52, 52, 52)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(74, 74, 74)
                                 .addComponent(cbx_status, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel5))
+                            .addComponent(jLabel5)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(70, 70, 70)
+                                .addComponent(txt_version, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -150,9 +168,12 @@ public class NewApp extends javax.swing.JFrame {
                     .addComponent(txt_app_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_version, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(cbx_owned_by, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtlabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbx_owned_by, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -165,10 +186,10 @@ public class NewApp extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_save)
                     .addComponent(btn_cancel))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        setBounds(0, 0, 540, 339);
+        setBounds(0, 0, 614, 378);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
@@ -178,19 +199,32 @@ public class NewApp extends javax.swing.JFrame {
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
         // TODO add your handling code here:
-        Apps apps = new Apps();
-        HashMap<String, Integer> map = apps.appsCombo();
-
+        ComboBoxApps cbApps = new ComboBoxApps();
+        HashMap<String, Integer> map = cbApps.appsCombo();
+        HashMap<String, Integer> statusCombo = cbApps.statusCombo();
+    
         appName = txt_app_name.getText();
         ownedby = map.get(cbx_owned_by.getSelectedItem().toString()).toString();
+        status = statusCombo.get(cbx_status.getSelectedItem().toString()).toString();
         desc = txt_desc.getText();
-//        status = cbx_status.getSelectedItem().toString();
-        System.out.println(appName + " = " + ownedby + " = " + desc);
+        version = txt_version.getText();
+        HashMap<String, String> requests = new HashMap<String, String>();
+        requests.put("app_name", appName);
+        requests.put("owned_by", ownedby);
+        requests.put("status", status);
+        requests.put("desc", desc);
+        requests.put("version", version);
+        Apps apps = new Apps();
+        apps.Insert(requests);
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void cbx_owned_byActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbx_owned_byActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbx_owned_byActionPerformed
+
+    private void cbx_statusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbx_statusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbx_statusActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,9 +271,10 @@ public class NewApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txt_app_name;
     private javax.swing.JTextArea txt_desc;
-    private javax.swing.JLabel txtlabel6;
+    private javax.swing.JTextField txt_version;
     // End of variables declaration//GEN-END:variables
 }
